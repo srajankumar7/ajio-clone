@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
+require("dotenv").config();
 const stripe = require("stripe")("sk_test_51THKVz0eUrozrmS69NbxcjFccPruinJ7EpBPRBuQevw9Wyux7yFzDpLh9K2pppBqvIdnMGflpoJn65D5C94zhuzQ00YfkRDPib");
 
 const nodemailer = require("nodemailer");
@@ -25,7 +26,7 @@ const Order = require("./models/Order");
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect("mongodb://localhost:27017/ajio-clone")
+mongoose.connect(process.env.MONGO_URI)
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
