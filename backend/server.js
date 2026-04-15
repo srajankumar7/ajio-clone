@@ -5,7 +5,7 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 require("dotenv").config();
-const stripe = require("stripe")("sk_test_51THKVz0eUrozrmS69NbxcjFccPruinJ7EpBPRBuQevw9Wyux7yFzDpLh9K2pppBqvIdnMGflpoJn65D5C94zhuzQ00YfkRDPib");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
