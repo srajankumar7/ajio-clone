@@ -19,7 +19,7 @@ function EditProduct() {
         formData.append("category", category);
         formData.append("image", image);
 
-        axios.put(`http://localhost:3001/update-product/${id}`, formData)
+        axios.put(`https://ajio-clone-1v00.onrender.com/update-product/${id}`, formData)
             .then(() => {
                 alert("Product updated successfully");
                 navigate("/manage-products");

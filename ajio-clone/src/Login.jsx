@@ -10,7 +10,7 @@ function Login({ setUserRole, setUserId }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post("http://localhost:3001/signin", { mobile })
+    axios.post("https://ajio-clone-1v00.onrender.com/signin", { mobile })
       .then((res) => {
 
         localStorage.setItem("role", res.data.role);

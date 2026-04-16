@@ -20,7 +20,7 @@ function Checkout({ userId }) {
   
   try {
     const response = await axios.post(
-      "http://localhost:3001/create-checkout-session",
+      "https://ajio-clone-1v00.onrender.com/create-checkout-session",
       {
         cartItems,
         userId,
@@ -45,7 +45,7 @@ function Checkout({ userId }) {
       navigate("/login");
       return;
     }
-    axios.get(`http://localhost:3001/cart/${userId}`)
+    axios.get(`https://ajio-clone-1v00.onrender.com/cart/${userId}`)
     .then((res) => {
       setCartItems(res.data);
       const totalAmount = res.data.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -63,7 +63,7 @@ function Checkout({ userId }) {
       await makePayment();
       return; 
     }
-    axios.post("http://localhost:3001/order", {
+    axios.post("https://ajio-clone-1v00.onrender.com/order", {
       userId,
       name,
       email,

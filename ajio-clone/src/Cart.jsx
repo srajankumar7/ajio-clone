@@ -11,13 +11,13 @@ function Cart({ userId }) {
       navigate("/login");
       return;
   }
-    axios.get(`http://localhost:3001/cart/${userId}`)
+    axios.get(`https://ajio-clone-1v00.onrender.com/cart/${userId}`)
       .then((res) => setCart(res.data))
       .catch(err => console.log(err))
   }, [userId, navigate]);
 
   const handleDelete = (id) => {
-    axios.delete(`http://localhost:3001/cart/${id}`)
+    axios.delete(`https://ajio-clone-1v00.onrender.com/cart/${id}`)
       .then(() => {
         setCart(cartItems.filter(item => item._id !== id));
 
@@ -25,7 +25,7 @@ function Cart({ userId }) {
   }
     
     const increaseQuantity = (item) => {
-      axios.put(`http://localhost:3001/cart/${item._id}`, {
+      axios.put(`https://ajio-clone-1v00.onrender.com/cart/${item._id}`, {
         quantity: item.quantity + 1
       })
         .then((res) => {
@@ -36,7 +36,7 @@ function Cart({ userId }) {
     const decreaseQuantity = (item) => {
       if (item.quantity == 1)
         return;
-      axios.put(`http://localhost:3001/cart/${item._id}`, {
+      axios.put(`https://ajio-clone-1v00.onrender.com/cart/${item._id}`, {
         quantity: item.quantity - 1,
       })
         .then((res) => {
@@ -65,7 +65,7 @@ function Cart({ userId }) {
             <div key={index} className="cart-item">
 
               <img
-                src={`http://localhost:3001/images/${item.image}`}
+                src={`https://ajio-clone-1v00.onrender.com/images/${item.image}`}
                 className="cart-img"
                 alt={item.name}
               />

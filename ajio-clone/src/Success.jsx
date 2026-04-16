@@ -24,7 +24,7 @@ function Success() {
       return;
     }
 
-    axios.post("http://localhost:3001/order", {
+    axios.post("https://ajio-clone-1v00.onrender.com/order", {
       userId,
       name,
       email,

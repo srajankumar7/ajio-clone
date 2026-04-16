@@ -6,7 +6,7 @@ function ProductDetails({userId}) {
     const { id } = useParams()
     const [product, setProducts] = useState(null);
     useEffect(() => {
-        axios.get(`http://localhost:3001/products/${id}`)
+        axios.get(`https://ajio-clone-1v00.onrender.com/products/${id}`)
             .then((res) => {
                 setProducts(res.data);
             })
@@ -21,7 +21,7 @@ function ProductDetails({userId}) {
             alert("Please login to add to cart");
             return;
         }
-        axios.post("http://localhost:3001/cart", {
+        axios.post("https://ajio-clone-1v00.onrender.com/cart", {
             userId,
             name: product.name,
             price: product.price,
@@ -37,7 +37,7 @@ if (!product) return <h2>Loading</h2>
     return (
         <div className="details-container">
             <div className="details-left">
-                <img src={`http://localhost:3001/images/${product.image}`} alt={product.name}  />
+                <img src={`https://ajio-clone-1v00.onrender.com/images/${product.image}`} alt={product.name}  />
             </div>
             <div className="details-right">
                 <h2>{product.name}</h2>

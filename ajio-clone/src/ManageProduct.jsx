@@ -6,7 +6,7 @@ function ManageProduct() {
     const [products, setProducts] = React.useState([]);
 
     React.useEffect(() => {
-        axios.get("http://localhost:3001/products")
+        axios.get("https://ajio-clone-1v00.onrender.com/products")
             .then((res) => {
                 setProducts(res.data);  
             })
@@ -15,7 +15,7 @@ function ManageProduct() {
             });
     }, []);
     const handleDelete = (id) => {
-        axios.delete("http://localhost:3001/products/"+id)
+        axios.delete("https://ajio-clone-1v00.onrender.com/products/"+id)
             .then(res => { console.log(res)
         window.location.reload(); })
         .catch(err => console.error(err));
@@ -42,7 +42,7 @@ function ManageProduct() {
                             <td>{product.quantity}</td>
                             <td>{product.category}</td>
                             <td>
-                                <img src={`http://localhost:3001/images/${product.image}`} alt={product.name} width={"100"} /></td>
+                                <img src={`https://ajio-clone-1v00.onrender.com/images/${product.image}`} alt={product.name} width={"100"} /></td>
                             <td>
                                 <Link to={`/edit-product/${product._id}`}><button>Edit</button></Link>
                                 <button onClick={() => handleDelete(product._id)}>Delete</button>

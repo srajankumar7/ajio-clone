@@ -5,13 +5,13 @@ function ManageOrders() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/orders")
+    axios.get("https://ajio-clone-1v00.onrender.com/orders")
       .then((res) => setOrders(res.data))
       .catch(err => console.log(err));
   }, []);
 
   const updateStatus = (id, status) => {
-    axios.put(`http://localhost:3001/order/${id}`, { status })
+    axios.put(`https://ajio-clone-1v00.onrender.com/order/${id}`, { status })
       .then((res) => {
         setOrders(orders.map(o => o._id === id ? res.data : o));
       });
