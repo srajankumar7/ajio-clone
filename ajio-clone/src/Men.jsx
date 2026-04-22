@@ -4,15 +4,15 @@ import { Carousel } from 'react-responsive-carousel';
 function Men() {
     const images = [
         {
-            src: "assets/img5.jpg",
+            src: "/assets/img5.jpg",
             alt: "Image 1"
         },
         {
-            src: "assets/img6.jpg",
+            src: "/assets/img6.jpg",
             alt: "Image 2"
         },
         {
-            src: "assets/img4.jpg",
+            src: "/assets/img4.jpg",
             alt: "Image 3"
         }];
     return (
