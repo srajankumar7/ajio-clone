@@ -34,17 +34,19 @@ function Success() {
       pincode,
       paymentMethod: "online"
     })
-    .catch((err) => console.log(err));
+      .catch((err) => console.log(err));
 
   }, [navigate, params]);
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2>Payment Successful</h2>
-      <p>Your order has been placed successfully.</p>
-      <button onClick={() => navigate("/")}>
-        Go to Home
-      </button>
+    <div className="success-container">
+      <div className="success-box">
+        <h2>Payment Successful</h2>
+        <p>Your order has been placed successfully.</p>
+        <button className="success-btn" onClick={() => navigate("/")}>
+          Go to Home
+        </button>
+      </div>
     </div>
   );
 }

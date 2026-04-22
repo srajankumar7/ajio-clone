@@ -31,18 +31,24 @@ app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI)
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "images/");
-    },
-    filename: (req, file, cb) => {
-        cb(null,file.fieldname +"_"+ Date.now() + path.extname(file.originalname));
-    }
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "products",
+    allowed_formats: ["jpg", "png", "jpeg"]
+  }
 });
 
 const upload = multer({ storage: storage });
 
-app.use('/images', express.static("images"));
 
 app.post('/signin', async (req, res) => {
     const { mobile } = req.body;
@@ -55,7 +61,7 @@ app.post('/signin', async (req, res) => {
 
 app.post('/add-product',upload.single("image"), async (req, res) => {
     const { name, price, category, quantity } = req.body;  
-    const product = await ProductModel.create({ name, price, category, quantity, image: req.file.filename });
+    const product = await ProductModel.create({ name, price, category, quantity, image: req.file.path });
     res.json(product);
 });
  
@@ -82,7 +88,7 @@ app.put('/update-product/:id', upload.single("image"), async (req, res) => {
         price: req.body.price,
         category: req.body.category,
         quantity: req.body.quantity,
-        image: req.file.filename     
+        image: req.file.path     
     });
     res.send("Product updated");
 });
@@ -193,7 +199,7 @@ app.post("/order", async (req, res) => {
         from: process.env.ETHEREAL_EMAIL,
         to: email,
         subject: "Order Invoice",
-        text: `Your order placed successfully. Total: Rs.${totalAmount.toFixed(2)}`,
+        text: `Your order placed successfully check the attached invoice for details. Total Amount: Rs.${totalAmount.toFixed(2)}`,
         attachments: [
           {
             filename: "invoice.pdf",

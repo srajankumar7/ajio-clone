@@ -42,7 +42,7 @@ function ManageProduct() {
                             <td>{product.quantity}</td>
                             <td>{product.category}</td>
                             <td>
-                                <img src={`https://ajio-clone-1v00.onrender.com/images/${product.image}`} alt={product.name} width={"100"} /></td>
+                                <img src={product.image} alt={product.name} width={"100"} /></td>
                             <td>
                                 <Link to={`/edit-product/${product._id}`}><button>Edit</button></Link>
                                 <button onClick={() => handleDelete(product._id)}>Delete</button>

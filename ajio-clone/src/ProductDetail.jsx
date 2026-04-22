@@ -37,7 +37,7 @@ if (!product) return <h2>Loading</h2>
     return (
         <div className="details-container">
             <div className="details-left">
-                <img src={`https://ajio-clone-1v00.onrender.com/images/${product.image}`} alt={product.name}  />
+                <img src={product.image} alt={product.name}  />
             </div>
             <div className="details-right">
                 <h2>{product.name}</h2>
