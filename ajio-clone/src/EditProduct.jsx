@@ -17,7 +17,6 @@ function EditProduct() {
         formData.append("price", price);
         formData.append("quantity", quantity);
         formData.append("category", category);
-        formData.append("image", image);
         if (image) {
             formData.append("image", image);
         }
