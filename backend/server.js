@@ -123,76 +123,94 @@ app.delete('/cart/:id', async (req, res) => {
 });
 
 app.post("/order", async (req, res) => {
-  const { userId, name, email, mobile, address, city, pincode, paymentMethod } = req.body;
+  try {
+    const { userId, name, email, mobile, address, city, pincode, paymentMethod } = req.body;
 
-  const cartItems = await Cart.find({ userId });
+    const cartItems = await Cart.find({ userId });
 
-  if (cartItems.length === 0) {
-    return res.status(400).json({ message: "Cart is empty" });
-  }
+    if (cartItems.length === 0) {
+      return res.status(400).json({ message: "Cart is empty" });
+    }
 
-  const totalAmount = cartItems.reduce((sum, item) => {
-    return sum + item.price * item.quantity;
-  }, 0);
+    const subtotal = cartItems.reduce((sum, item) => {
+      return sum + item.price * item.quantity;
+    }, 0);
 
-  const order = await Order.create({
-    userId,
-    items: cartItems,
-    totalAmount,
-    name,
-    email,
-    mobile,
-    address,
-    city,
-    pincode,
-    paymentMethod
-  });
+    const gst = subtotal * 0.18;
+    const totalAmount = subtotal + gst;
 
-  await Cart.deleteMany({ userId });
-
-  if (!fs.existsSync("./invoices")) {
-    fs.mkdirSync("./invoices");
-  }
-
-  const filePath = `./invoices/invoice_${Date.now()}.pdf`;
-
-  const doc = new PDFDocument();
-  const stream = fs.createWriteStream(filePath);
-
-  doc.pipe(stream);
-
-  doc.text("INVOICE");
-  doc.text("----------------");
-  doc.text(`Name: ${name}`);
-  doc.text(`Email: ${email}`);
-
-  doc.text("\nItems:");
-  cartItems.forEach((item) => {
-    doc.text(`${item.name} - ₹${item.price} x ${item.quantity}`);
-  });
-
-  doc.text("\nTotal: ₹" + totalAmount);
-
-  doc.end();
-
-  stream.on("finish", async () => {
-    const info = await transporter.sendMail({
-      from: 'wava87@ethereal.email',
-      to: email,
-      subject: "Order Invoice",
-      text: `Your order placed successfully. Total: ₹${totalAmount}`,
-      attachments: [
-        {
-          filename: "invoice.pdf",
-          path: filePath
-        }
-      ]
+    const order = await Order.create({
+      userId,
+      items: cartItems,
+      totalAmount,
+      name,
+      email,
+      mobile,
+      address,
+      city,
+      pincode,
+      paymentMethod
     });
 
-    console.log("Preview:", nodemailer.getTestMessageUrl(info));
+    await Cart.deleteMany({ userId });
 
-    res.json(order);
-  });
+    if (!fs.existsSync("./invoices")) {
+      fs.mkdirSync("./invoices");
+    }
+
+    const filePath = `./invoices/invoice_${Date.now()}.pdf`;
+
+    const doc = new PDFDocument();
+    const stream = fs.createWriteStream(filePath);
+
+    doc.pipe(stream);
+
+    doc.fontSize(18).text("INVOICE", { align: "center" });
+    doc.moveDown();
+
+    doc.fontSize(12).text(`Name: ${name}`);
+    doc.text(`Email: ${email}`);
+    doc.text(`Mobile: ${mobile}`);
+    doc.text(`Address: ${address}, ${city} - ${pincode}`);
+
+    doc.moveDown();
+    doc.text("Items:");
+
+    cartItems.forEach((item) => {
+      const itemTotal = item.price * item.quantity;
+      doc.text(`${item.name} - Rs.${item.price} x ${item.quantity} = Rs.${itemTotal}`);
+    });
+
+    doc.moveDown();
+    doc.text(`Subtotal: Rs.${subtotal}`);
+    doc.text(`GST (18%): Rs.${gst.toFixed(2)}`);
+    doc.text(`Total: Rs.${totalAmount.toFixed(2)}`);
+
+    doc.end();
+
+    stream.on("finish", async () => {
+      const info = await transporter.sendMail({
+        from: process.env.ETHEREAL_EMAIL,
+        to: email,
+        subject: "Order Invoice",
+        text: `Your order placed successfully. Total: Rs.${totalAmount.toFixed(2)}`,
+        attachments: [
+          {
+            filename: "invoice.pdf",
+            path: filePath
+          }
+        ]
+      });
+
+      console.log("Preview:", nodemailer.getTestMessageUrl(info));
+
+      res.json(order);
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get("/orders", async (req, res) => {
