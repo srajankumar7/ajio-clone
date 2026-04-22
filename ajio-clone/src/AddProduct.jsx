@@ -9,7 +9,7 @@ function AddProduct() {
         formData.append("quantity", e.target.quantity.value);
         formData.append("category", e.target.category.value);
       
-      const image = e.target.imaage.files[0];
+      const image = e.target.elements.imaage?.files[0];
       if (image) {
         formData.append("image", image);
       }
@@ -45,7 +45,7 @@ function AddProduct() {
               </select>
               <br />
               <label>Image URL:</label>
-              <input type="file" placeholder="Upload image"name="image" />
+              <input type="file"  name="image" />
               <br />
               <button type="submit">Add Product</button>
       </form>  
