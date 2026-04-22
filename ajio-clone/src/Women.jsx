@@ -4,15 +4,15 @@ import { Carousel } from 'react-responsive-carousel';
 function Women() {
     const images = [
         {
-            src: "src/assets/w1.jpg",
+            src: "assets/w1.jpg",
             alt: "Image 1"
         },
         {
-            src: "src/assets/w2.jpg",
+            src: "assets/w2.jpg",
             alt: "Image 2"
         },
         {
-            src: "src/assets/w4.jpg",
+            src: "assets/w4.jpg",
             alt: "Image 3"
         }];
     return (
