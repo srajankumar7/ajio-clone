@@ -90,13 +90,12 @@ app.put('/update-product/:id', upload.single("image"), async (req, res) => {
       price: req.body.price,
       category: req.body.category,
       quantity: req.body.quantity,
-      image: req.file.path
     }
     if (req.file) {
       updateData.image = req.file.path;
     }
-    await ProductModel.findByIdAndUpdate(id, updateData)
-    res.send("Product updated");
+    const updated = await ProductModel.findByIdAndUpdate(id, updateData, { new: true });
+    res.json(updated);
   }
   catch (err) {
     console.log(err);
