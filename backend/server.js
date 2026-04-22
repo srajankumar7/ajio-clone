@@ -82,15 +82,26 @@ app.get('/products/:id', async (req, res) => {
 });
 
 app.put('/update-product/:id', upload.single("image"), async (req, res) => {
+  try {
     const id = req.params.id;
-    await ProductModel.findByIdAndUpdate(id, {
-        name: req.body.name,
-        price: req.body.price,
-        category: req.body.category,
-        quantity: req.body.quantity,
-        image: req.file.path     
-    });
+    let updateData =
+    {
+      name: req.body.name,
+      price: req.body.price,
+      category: req.body.category,
+      quantity: req.body.quantity,
+      image: req.file.path
+    }
+    if (req.file) {
+      updateData.image = req.file.path;
+    }
+    await ProductModel.findByIdAndUpdate(id, updateData)
     res.send("Product updated");
+  }
+  catch (err) {
+    console.log(err);
+    res.status(500).send("error updating product");
+  }
 });
 
 app.post("/cart", async(req, res)=> {
