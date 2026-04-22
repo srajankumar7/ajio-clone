@@ -7,6 +7,9 @@ const path = require("path");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+const PDFDocument = require("pdfkit");
+const fs = require("fs");
+
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
@@ -119,46 +122,77 @@ app.delete('/cart/:id', async (req, res) => {
     res.json(" deleted");
 });
 
-
 app.post("/order", async (req, res) => {
-    const { userId, name,email, mobile, address, city, pincode, paymentMethod } = req.body;
+  const { userId, name, email, mobile, address, city, pincode, paymentMethod } = req.body;
 
-    const cartItems = await Cart.find({ userId });
-    if (cartItems.length === 0) {
-  return res.status(400).json({ message: "Cart is empty" });
-}
+  const cartItems = await Cart.find({ userId });
 
-    const totalAmount = cartItems.reduce((sum, item) => {
-        return sum + (item.price * item.quantity);
-    }, 0);
+  if (cartItems.length === 0) {
+    return res.status(400).json({ message: "Cart is empty" });
+  }
 
-    const order = await Order.create({
-        userId,
-        items: cartItems,
-        totalAmount: totalAmount,
-        name,
-        email,
-        mobile,
-        address,
-        city,
-        pincode,
-        paymentMethod
-    });
+  const totalAmount = cartItems.reduce((sum, item) => {
+    return sum + item.price * item.quantity;
+  }, 0);
 
-    await Cart.deleteMany({ userId });
+  const order = await Order.create({
+    userId,
+    items: cartItems,
+    totalAmount,
+    name,
+    email,
+    mobile,
+    address,
+    city,
+    pincode,
+    paymentMethod
+  });
 
-    const items=cartItems.map(item => `${item.name} -${item.price} x ${item.quantity}`).join(", ");
+  await Cart.deleteMany({ userId });
+
+  if (!fs.existsSync("./invoices")) {
+    fs.mkdirSync("./invoices");
+  }
+
+  const filePath = `./invoices/invoice_${Date.now()}.pdf`;
+
+  const doc = new PDFDocument();
+  const stream = fs.createWriteStream(filePath);
+
+  doc.pipe(stream);
+
+  doc.text("INVOICE");
+  doc.text("----------------");
+  doc.text(`Name: ${name}`);
+  doc.text(`Email: ${email}`);
+
+  doc.text("\nItems:");
+  cartItems.forEach((item) => {
+    doc.text(`${item.name} - ₹${item.price} x ${item.quantity}`);
+  });
+
+  doc.text("\nTotal: ₹" + totalAmount);
+
+  doc.end();
+
+  stream.on("finish", async () => {
     const info = await transporter.sendMail({
-        from:"Test@gmail.com",
-        to: email,
-        subject: "Order Confirmation",
-        text: `Your order has been placed successfully. Order details: ${items}. Total Amount: ${totalAmount}`
+      from: 'wava87@ethereal.email',
+      to: email,
+      subject: "Order Invoice",
+      text: `Your order placed successfully. Total: ₹${totalAmount}`,
+      attachments: [
+        {
+          filename: "invoice.pdf",
+          path: filePath
+        }
+      ]
     });
-    
 
-
+    console.log("Preview:", nodemailer.getTestMessageUrl(info));
 
     res.json(order);
+  });
 });
 
 app.get("/orders", async (req, res) => {
