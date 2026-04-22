@@ -26,7 +26,7 @@ function Home() {
       {products.length > 0 ? (
       products.map((product) => (
       <div className="product-card" key={product._id}>
-      <img src={product.image}alt={product.name} width={"50"} />
+      <img src={`https://ajio-clone-1v00.onrender.com/images/${product.image}`} alt={product.name} width={"50"} />
       <h3>{product.name}</h3>
       <p>{product.price}</p>
       <button onClick={() => navigate(`/product/${product._id}`)}>Quick View</button>
