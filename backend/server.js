@@ -205,9 +205,9 @@ app.post("/create-checkout-session", async (req, res) => {
     line_items: lineItems,
     mode: "payment",
 
-    success_url: `http://localhost:5173/success?userId=${userId}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&mobile=${encodeURIComponent(mobile)}&address=${encodeURIComponent(address)}&city=${encodeURIComponent(city)}&pincode=${encodeURIComponent(pincode)}`,
+    success_url: `https://ajiioclone.netlify.app/success?userId=${userId}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&mobile=${encodeURIComponent(mobile)}&address=${encodeURIComponent(address)}&city=${encodeURIComponent(city)}&pincode=${encodeURIComponent(pincode)}`,
 
-    cancel_url: "http://localhost:5173/cancel",
+    cancel_url: "https://ajiioclone.netlify.app/cancel",
   });
 
   res.json({ url: session.url });
