@@ -17,10 +17,10 @@ function EditProduct() {
         formData.append("price", price);
         formData.append("quantity", quantity);
         formData.append("category", category);
+
         if (image) {
             formData.append("image", image);
         }
-
         axios.put(`https://ajio-clone-1v00.onrender.com/update-product/${id}`, formData)
             .then(() => {
                 alert("Product updated successfully");

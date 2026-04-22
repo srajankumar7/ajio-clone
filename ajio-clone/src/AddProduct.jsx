@@ -8,7 +8,11 @@ function AddProduct() {
         formData.append("price", e.target.price.value);
         formData.append("quantity", e.target.quantity.value);
         formData.append("category", e.target.category.value);
-        formData.append("image", e.target.image.files[0]);
+      
+      const image = e.target.imaage.files[0];
+      if (image) {
+        formData.append("image", image);
+      }
         axios.post("https://ajio-clone-1v00.onrender.com/add-product", formData)
         .then(() => {
             alert("Product added successfully");

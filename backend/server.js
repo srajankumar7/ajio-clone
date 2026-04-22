@@ -25,30 +25,23 @@ const UserModel = require("./models/Users");
 const ProductModel = require("./models/Product");
 const Cart = require("./models/Cart");
 const Order = require("./models/Order");
+const upload = require("./multer");
 
 app.use(cors());
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI)
 
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "products",
-    allowed_formats: ["jpg", "png", "jpeg","avif"]
-  }
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, "images/");
+    },
+    filename: (req, file, cb) => {
+        cb(null,file.fieldname +"_"+ Date.now() + path.extname(file.originalname));
+    }
 });
 
 const upload = multer({ storage: storage });
-
 
 app.post('/signin', async (req, res) => {
     const { mobile } = req.body;
@@ -59,10 +52,17 @@ app.post('/signin', async (req, res) => {
     res.json(user);
 });
 
-app.post('/add-product',upload.single("image"), async (req, res) => {
-    const { name, price, category, quantity } = req.body;  
-    const product = await ProductModel.create({ name, price, category, quantity, image: req.file.path });
+app.post('/add-product', upload.single("image"), async (req, res) => {
+  try {
+    const { name, price, category, quantity } = req.body;
+    const imageUrl = req.file ? req.file.path : "";
+    const product = await ProductModel.create({ name, price, category, quantity, image: req.file.filename });
     res.json(product);
+  }
+  catch (err) {
+    console.log(err);
+    res.status(500).send("Error");
+  }
 });
  
 app.get('/products', async (req, res) => {
