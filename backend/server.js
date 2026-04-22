@@ -27,7 +27,13 @@ const ProductModel = require("./models/Product");
 const Cart = require("./models/Cart");
 const Order = require("./models/Order");
 
-app.use(cors());
+const cors = require("cors");
+
+app.use(cors({
+  origin: "https://ajiioclone.netlify.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI);
