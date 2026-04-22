@@ -27,12 +27,12 @@ const ProductModel = require("./models/Product");
 const Cart = require("./models/Cart");
 const Order = require("./models/Order");
 
-app.use(cors({
-  origin: "*"
-}));
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI);
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log("Mongo Error:", err));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -140,75 +140,86 @@ app.delete("/cart/:id", async (req, res) => {
 });
 
 app.post("/order", async (req, res) => {
-  const { userId, name, email, mobile, address, city, pincode, paymentMethod } = req.body;
+  try {
+    const { userId, name, email, mobile, address, city, pincode, paymentMethod } = req.body;
 
-  const cartItems = await Cart.find({ userId });
+    const cartItems = await Cart.find({ userId });
 
-  if (cartItems.length === 0) {
-    return res.status(400).json({ message: "Cart empty" });
-  }
+    if (cartItems.length === 0) {
+      return res.status(400).json({ message: "Cart empty" });
+    }
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const gst = subtotal * 0.18;
-  const totalAmount = subtotal + gst;
+    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const gst = subtotal * 0.18;
+    const totalAmount = subtotal + gst;
 
-  const order = await Order.create({
-    userId,
-    items: cartItems,
-    totalAmount,
-    name,
-    email,
-    mobile,
-    address,
-    city,
-    pincode,
-    paymentMethod
-  });
-
-  await Cart.deleteMany({ userId });
-
-  const filePath = `./invoices/invoice_${Date.now()}.pdf`;
-
-  const doc = new PDFDocument();
-  const writeStream = fs.createWriteStream(filePath);
-
-  doc.pipe(writeStream);
-
-  doc.text("INVOICE");
-  doc.text("----------------");
-
-  doc.text(`Name: ${name}`);
-  doc.text(`Email: ${email}`);
-
-  doc.text("\nItems:");
-  cartItems.forEach((item) => {
-    doc.text(`${item.name} - ₹${item.price} x ${item.quantity}`);
-  });
-
-  doc.text("\nSubtotal: ₹" + subtotal);
-  doc.text("GST (18%): ₹" + gst.toFixed(2));
-  doc.text("Total: ₹" + totalAmount.toFixed(2));
-
-  doc.end();
-
-  writeStream.on("finish", async () => {
-    const info = await transporter.sendMail({
-      from: "shop@test.com",
-      to: email,
-      subject: "Order Invoice",
-      text: "Invoice attached",
-      attachments: [
-        {
-          filename: "invoice.pdf",
-          path: filePath
-        }
-      ]
+    const order = await Order.create({
+      userId,
+      items: cartItems,
+      totalAmount,
+      name,
+      email,
+      mobile,
+      address,
+      city,
+      pincode,
+      paymentMethod
     });
 
-    console.log("Preview:", nodemailer.getTestMessageUrl(info));
+    await Cart.deleteMany({ userId });
 
-    res.json(order);
-  });
+    const dir = "./invoices";
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+
+    const filePath = `./invoices/invoice_${Date.now()}.pdf`;
+
+    const doc = new PDFDocument();
+    const writeStream = fs.createWriteStream(filePath);
+
+    doc.pipe(writeStream);
+
+    doc.text("INVOICE");
+    doc.text("----------------");
+
+    doc.text(`Name: ${name}`);
+    doc.text(`Email: ${email}`);
+
+    doc.text("\nItems:");
+    cartItems.forEach((item) => {
+      doc.text(`${item.name} - ₹${item.price} x ${item.quantity}`);
+    });
+
+    doc.text("\nSubtotal: ₹" + subtotal);
+    doc.text("GST (18%): ₹" + gst.toFixed(2));
+    doc.text("Total: ₹" + totalAmount.toFixed(2));
+
+    doc.end();
+
+    writeStream.on("finish", async () => {
+      const info = await transporter.sendMail({
+        from: "shop@test.com",
+        to: email,
+        subject: "Order Invoice",
+        text: "Invoice attached",
+        attachments: [
+          {
+            filename: "invoice.pdf",
+            path: filePath
+          }
+        ]
+      });
+
+      console.log("Preview:", nodemailer.getTestMessageUrl(info));
+
+      res.json(order);
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get("/orders", async (req, res) => {
