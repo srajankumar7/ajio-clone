@@ -5,41 +5,41 @@ import { Carousel } from 'react-responsive-carousel';
 export default function CarouselComponent() {
     const images = [
         {
-            src: "src/assets/img1.jpg",
+            src: "/assets/img1.jpg",
             alt: "Image 1"
         },
         {
-            src: "src/assets/img2.jpg",
+            src: "/assets/img2.jpg",
             alt: "Image 2"
         },
         {
-            src: "src/assets/img3.jpg",
+            src: "/assets/img3.jpg",
             alt: "Image 3"
         },
         {
-            src: "src/assets/img4.jpg",
+            src: "/assets/img4.jpg",
             alt: "Image 4"  
         },
         {
-            src: "src/assets/img5.jpg",
+            src: "/assets/img5.jpg",
             alt: "Image 5"
         },
         {
-            src: "src/assets/img6.jpg",
+            src: "/assets/img6.jpg",
             alt: "Image 6"
         },
     ];
     const images2 = [
         {
-            src: "src/assets/w1.jpg",
+            src: "/assets/w1.jpg",
             alt: "Image 1"
         },
         {
-            src: "src/assets/w2.jpg",
+            src: "/assets/w2.jpg",
             alt: "Image 2"
         },
         {
-            src: "src/assets/w4.jpg",
+            src: "/assets/w4.jpg",
             alt: "Image 3"
         }
     ];
