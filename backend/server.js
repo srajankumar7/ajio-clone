@@ -27,12 +27,8 @@ const ProductModel = require("./models/Product");
 const Cart = require("./models/Cart");
 const Order = require("./models/Order");
 
-const cors = require("cors");
-
 app.use(cors({
-  origin: "https://ajiioclone.netlify.app",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
+  origin: "*"
 }));
 app.use(express.json());
 
