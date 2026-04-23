@@ -525,7 +525,7 @@ text-align: center;
   color: #000;
   
 }
-.my-order :hover{
+.my-order:hover{
   background: #000;
   color: #fff;
 }
