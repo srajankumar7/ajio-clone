@@ -223,6 +223,16 @@ app.get("/orders", async (req, res) => {
     const orders = await Order.find();
     res.json(orders);
 });
+app.get("/orders/:userId);", async (req, res) => {
+  try {
+    const orders = await Order.find({ userId: req.params.userId }).Sorted({ _id: -1 });
+    res.json(orders);
+  }
+  catch (err) {
+    console.log(err);
+    res.status(500).send("Erro fetching orders");
+  }
+});
 app.put("/order/:id", async (req, res) => {
     const { status } = req.body;
 

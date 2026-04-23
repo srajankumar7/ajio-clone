@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import navigate from "react-router-dom";
 
 function Sheader({ userId, setUserId,setUserRole }) {
 
@@ -29,7 +30,12 @@ function Sheader({ userId, setUserId,setUserRole }) {
         {!userId && (
           <Link to="/login">Sign In / Join AJIO</Link>
         )}
-      </div>
+        </div>
+        {userId && (
+        <button onClick={()=>navigate("/my-orders")}>
+          My Orders
+        </button>
+      )}
 
       {userId && (
         <button className="logout-btn" onClick={handleLogout}>

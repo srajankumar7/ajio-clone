@@ -501,3 +501,19 @@ text-align: center;
   cursor: pointer;
   transition: 0.3s;
 }
+.orders-container{
+  padding: 20px;
+}
+.order-card{
+  border:1px solid #ddd;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius: 8px;
+  background: #fff;
+}
+.order-item{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 5px 0;
+}

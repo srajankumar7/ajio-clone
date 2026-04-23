@@ -17,6 +17,7 @@ import Checkout from './Checkout.jsx';
 import ManageOrders from './ManageOrders.jsx';
 import ManageUser from './ManageUser.jsx';
 import Success from './Success.jsx';
+import MyOrders from './Myorders.jsx';
 
 function App() {
   const [userId, setUserId] = React.useState(null);
@@ -45,6 +46,7 @@ function App() {
         <Route path="/manage-orders" element={<ManageOrders />} />
         <Route path="/manage-users" element={<ManageUser />} />
         <Route path="/success" element={<Success />} />
+        <Route path="my-orders" element={<MyOrders/>}/>
         </Routes>
     </BrowserRouter>
   )
