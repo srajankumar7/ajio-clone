@@ -30,7 +30,7 @@ function Sheader({ userId, setUserId,setUserRole }) {
         )}
         </div>
         {userId && (
-        <button onClick={()=>navigate("/my-orders")}>
+        <button className="my-order" onClick={()=>navigate("/my-orders")}>
           My Orders
         </button>
       )}

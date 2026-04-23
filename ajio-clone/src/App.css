@@ -517,3 +517,13 @@ text-align: center;
   gap: 10px;
   margin: 5px 0;
 }
+.my-order{
+  border-radius: 8px;
+  padding: 10px 20px;
+  border: none;
+  background-color: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+}
