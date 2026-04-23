@@ -518,7 +518,10 @@ text-align: center;
   margin: 5px 0;
 }
 .my-order{
-  
+  background: none;    
+  border: none;       
+  padding: 0;         
+  cursor: pointer;
   background-color: none;
   color: rgb(0, 0, 0);
   
