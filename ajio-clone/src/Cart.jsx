@@ -65,7 +65,7 @@ function Cart({ userId }) {
             <div key={index} className="cart-item">
 
               <img
-                src={`https://ajio-clone-1v00.onrender.com/images/${item.image}`}
+                src={item.image}
                 className="cart-img"
                 alt={item.name}
               />
