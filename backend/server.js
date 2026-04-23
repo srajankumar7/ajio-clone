@@ -46,12 +46,12 @@ app.post('/add-product', upload.single("image"), async (req, res) => {
   try {
     const { name, price, category, quantity } = req.body;
     const imageUrl = req.file ? req.file.path : "";
-    const product = await ProductModel.create({ name, price, category, quantity, image: req.file.filename });
+    const product = await ProductModel.create({ name, price, category, quantity, image: imageUrl });
     res.json(product);
   }
   catch (err) {
     console.log(err);
-    res.status(500).send("Error");
+    res.status(500).send(err.message);
   }
 });
  
