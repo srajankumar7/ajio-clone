@@ -140,11 +140,9 @@ app.post("/order", async (req, res) => {
 
     const subtotal = cartItems.reduce((sum, item) => {
       return sum + item.price * item.quantity;
-    }, 0);
-
+    }, 0);    
     const gst = subtotal * 0.18;
     const totalAmount = subtotal + gst;
-
     const order = await Order.create({
       userId,
       items: cartItems,
