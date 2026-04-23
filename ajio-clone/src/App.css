@@ -518,11 +518,14 @@ text-align: center;
   margin: 5px 0;
 }
 .my-order{
-  background: none;    
+  background: transparent;    
   border: none;       
-  padding: 0;         
+  padding: 8px 16px;         
   cursor: pointer;
-  background-color: none;
-  color: rgb(0, 0, 0);
+  color: #000;
   
+}
+.my-order :hover{
+  background: #000;
+  color: #fff;
 }
