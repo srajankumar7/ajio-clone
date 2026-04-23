@@ -1,15 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import navigate from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 
 function Sheader({ userId, setUserId,setUserRole }) {
-
+  const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("role");
     setUserId(null);
     setUserRole(null);
   };
-
 
     return (
     <div className="navbar">

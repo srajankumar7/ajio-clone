@@ -24,7 +24,7 @@ function MyOrders() {
                         <p><b>Total:</b>{order.totalAmount}</p>
                         <p><b>Payment:</b>{order.paymentMethod}</p>
                         <h4>Items:</h4>
-                        {orders.items.map((item, i) => (
+                        {order.items.map((item, i) => (
                             <div key={i} className="order-item">
                                 <img src={item.image} alt="" width="60" />
                                 <span>{item.name}</span>

@@ -223,9 +223,9 @@ app.get("/orders", async (req, res) => {
     const orders = await Order.find();
     res.json(orders);
 });
-app.get("/orders/:userId);", async (req, res) => {
+app.get("/orders/:userId", async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.params.userId }).Sorted({ _id: -1 });
+    const orders = await Order.find({ userId: req.params.userId }).sort({ _id: -1 });
     res.json(orders);
   }
   catch (err) {
