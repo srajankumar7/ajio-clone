@@ -14,6 +14,9 @@ function Login({ setUserRole, setUserId }) {
       .then((res) => {
 
         localStorage.setItem("role", res.data.role);
+        if (res.data._id) {
+          localStorage.setItem("userId", res.data._id);
+        }
 
         setUserId(res.data._id);
         setUserRole(res.data.role);
