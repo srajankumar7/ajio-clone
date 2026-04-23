@@ -45,7 +45,7 @@ app.post('/signin', async (req, res) => {
 app.post('/add-product', upload.single("image"), async (req, res) => {
   try {
     const { name, price, category, quantity } = req.body;
-    const imageUrl = req.file ? req.file.path : "";
+    const imageUrl = req.file?.path || req.file?.url || "";
     const product = await ProductModel.create({ name, price, category, quantity, image: imageUrl });
     res.json(product);
   }

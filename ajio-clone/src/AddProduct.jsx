@@ -9,7 +9,7 @@ function AddProduct() {
         formData.append("quantity", e.target.quantity.value);
         formData.append("category", e.target.category.value);
       
-      const image = e.target.elements.imaage?.files[0];
+      const image = e.target.elements.image?.files[0];
       if (image) {
         formData.append("image", image);
       }
