@@ -31,7 +31,6 @@ function MyOrders() {
                   {new Date(order.createdAt).toLocaleDateString()}
                 </p>
               </div>
-              <div className="order-status">Delivered</div>
             </div>
 
             <div className="order-items">

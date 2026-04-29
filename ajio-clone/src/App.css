@@ -596,4 +596,15 @@ text-align: center;
 .no-orders {
   text-align: center;
   color: gray;
+}.my-order{
+  background: transparent;    
+  border: none;       
+  padding: 8px 16px;         
+  cursor: pointer;
+  color: #000;
+  
+}
+.my-order:hover{
+  background: #151414;
+  color: #fff;
 }
