@@ -61,8 +61,7 @@ function Checkout({ userId }) {
       await makePayment();
       return;
     }
-      try {
-    const res = await axios.post("https://ajio-clone-1v00.onrender.com/order", {
+    axios.post("https://ajio-clone-1v00.onrender.com/order", {
       userId,
       items: cartItems,
       totalAmount: total,
@@ -73,21 +72,15 @@ function Checkout({ userId }) {
       city,
       pincode,
       paymentMethod
-    });
-
-    console.log(res);
-
-    alert("Order placed successfully");
-    navigate("/my-orders");
-
-      }
-      catch (err)
-      {
+    })
+      .then(() => {
+        alert("Order placed successfully");
+        navigate("/my-orders");
+      })
+      .catch((err) => {
         console.log(err.response?.data || err.message);
-
-    alert("Order placed successfully");
-    navigate("/my-orders");
-      }
+        alert("Order failed");
+      });
   }
   return (
     <div className="checkout-container">
