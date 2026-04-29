@@ -31,13 +31,6 @@ function ManageOrders() {
         <p><strong>Total:</strong> ₹{order.totalAmount}</p>
         <p><strong>Payment:</strong> {order.paymentMethod}</p>
 
-        <p>
-          <strong>Status:</strong>
-          <span className={`status ${order.status}`}>
-            {order.status}
-          </span>
-        </p>
-
         <div className="order-buttons">
           <button onClick={() => updateStatus(order._id, "Shipped")}>
             Shipped
