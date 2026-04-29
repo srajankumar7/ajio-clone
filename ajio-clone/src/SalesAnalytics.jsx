@@ -26,7 +26,7 @@ function SalesAnalytics() {
             month: "short"
           });
 
-          grouped[date] = (grouped[date] || 0) + Number(order.totalAmount.fixed(2));
+          grouped[date] = (grouped[date] || 0) + Number(order.totalAmount.toFixed(2));
         });
 
         const result = Object.keys(grouped).map(date => ({

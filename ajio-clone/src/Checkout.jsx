@@ -76,7 +76,7 @@ function Checkout({ userId }) {
       .then((res) => {
         console.log(res);
         alert("Order placed successfully");
-        navigate("/");
+        navigate("/my-orders");
       })
       .catch((err) => {
         console.log(err.response?.data || err.message);
