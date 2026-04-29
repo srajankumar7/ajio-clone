@@ -19,17 +19,19 @@ function SalesAnalytics() {
         const grouped = {};
 
         res.data.forEach(order => {
+          if (!order.createdAt) return;
+
           const date = new Date(order.createdAt).toLocaleDateString();
-          if (!grouped[date]) grouped[date] = 0;
-          grouped[date] += order.totalAmount;
+
+          grouped[date] = (grouped[date] || 0) + order.totalAmount;
         });
 
-        const chartData = Object.keys(grouped).map(date => ({
+        const result = Object.keys(grouped).map(date => ({
           date,
           sales: grouped[date]
         }));
 
-        setData(chartData);
+        setData(result);
       })
       .catch(err => console.log(err));
   }, []);
@@ -37,6 +39,7 @@ function SalesAnalytics() {
   return (
     <div style={{ width: "90%", margin: "auto" }}>
       <h2 style={{ textAlign: "center" }}>Sales Analysis</h2>
+
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
