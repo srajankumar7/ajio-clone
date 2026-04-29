@@ -20,8 +20,7 @@ function MyOrders() {
                 orders.map((order) => (
                     <div key={order._id}
                         className="order-card">
-                        <p><b>Total:</b>{Number(order.totalAmount).toFixed(2)}</p>
-                        <p><b>Payment:</b>{order.paymentMethod}</p>
+                        
                         <h4>Items:</h4>
                         {order.items.map((item, i) => (
                             <div key={i} className="order-item">
@@ -32,6 +31,8 @@ function MyOrders() {
                                 </div>
                             </div>    
                         ))}
+                        <p><b>Total:</b>{Number(order.totalAmount).toFixed(2)}</p>
+                        <p><b>Payment:</b>{order.paymentMethod}</p>
                     </div>      
                 ))
             )}

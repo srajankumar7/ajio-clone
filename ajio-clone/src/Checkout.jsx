@@ -61,23 +61,27 @@ function Checkout({ userId }) {
       await makePayment();
       return;
     }
-    axios.post("https://ajio-clone-1v00.onrender.com/order", {
-      userId,
-      items: cartItems,
-      totalAmount: total,
-      name,
-      email,
-      mobile,
-      address,
-      city,
-      pincode,
-      paymentMethod
-    })
-      .then(() => alert("Order placed successfully"))
-      .catch((err) => {
-        console.log(err.response?.data || err.message);
-        alert("Order failed");
-      });
+    try {
+  await axios.post("https://ajio-clone-1v00.onrender.com/order", {
+    userId,
+    items: cartItems,
+    totalAmount: total,
+    name,
+    email,
+    mobile,
+    address,
+    city,
+    pincode,
+    paymentMethod
+  });
+
+  alert("Order placed successfully");
+  navigate("/my-orders");
+
+} catch (err) {
+  console.log(err.response?.data || err.message);
+  alert("Order failed");
+}
   }
   return (
     <div className="checkout-container">
