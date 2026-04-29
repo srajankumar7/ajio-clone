@@ -76,12 +76,11 @@ function Checkout({ userId }) {
       .then((res) => {
         console.log(res);
 
-        navigate("/my-orders");
+        alert("Order placed successfully");
 
-        setTimeout(() => {
-          alert("Order placed successfully");
-        }, 200);
+        navigate("/my-orders");
       })
+      
       
       .catch((err) => {
         console.log(err.response?.data || err.message);

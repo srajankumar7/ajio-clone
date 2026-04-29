@@ -18,13 +18,13 @@ function SalesAnalytics() {
       .then((res) => {
         const grouped = {};
 
-        res.data.forEach((order, i) => {
-          const date = order.createdAt
-            ? new Date(order.createdAt).toLocaleDateString("en-IN", {
-                day: "2-digit",
-                month: "short"
-              })
-            : `Order ${i + 1}`;
+        res.data.forEach((order) => {
+          if (!order.createdAt) return;
+
+          const date = new Date(order.createdAt).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short"
+          });
 
           grouped[date] =
             (grouped[date] || 0) + Number(order.totalAmount);
@@ -34,6 +34,9 @@ function SalesAnalytics() {
           date,
           sales: Number(grouped[date].toFixed(2))
         }));
+
+        // sort by date
+        result.sort((a, b) => new Date(a.date) - new Date(b.date));
 
         setData(result);
       })
@@ -49,8 +52,8 @@ function SalesAnalytics() {
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" />
           <YAxis />
-          <Tooltip formatter={(value) => `₹${Number(value).toFixed(2)}`} />
-          <Bar dataKey="sales" />
+          <Tooltip formatter={(value) => `₹${value.toFixed(2)}`} />
+          <Bar dataKey="sales" radius={[6, 6, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
