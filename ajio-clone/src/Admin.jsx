@@ -14,7 +14,8 @@ function Admin() {
                 <button onClick={() => navigate("/add-product")}>Add New Product</button>
                 <button onClick={() => navigate("/manage-products")}>Manage Products</button>
                 <button onClick={() => navigate("/manage-users")}>Manage Users</button>
-                    <button onClick={() => navigate("/manage-orders")}>View Orders</button>      
+                    <button onClick={() => navigate("/manage-orders")}>View Orders</button>    
+                    <button onClick={() => navigate("/sales")}>Sales Analysis</button>
                 </div>
                 <button className="admin-logout" onClick={handlelogout}>Logout</button> 
             </div>
