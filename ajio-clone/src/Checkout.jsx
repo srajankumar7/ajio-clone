@@ -19,20 +19,18 @@ function Checkout({ userId }) {
   const makePayment = async () => {
   
   try {
-    const response = await axios.post(
-      "https://ajio-clone-1v00.onrender.com/create-checkout-session",
-      {
-        cartItems,
-        userId,
-        name,
-        email,
-        mobile,
-        address,
-        city,
-        pincode
-
-      }
-    );
+    const response = await axios.post("https://ajio-clone-1v00.onrender.com/order", {
+      userId,
+     items: cartItems,
+      totalAmount: total,
+      name,
+      email,
+      mobile,
+      address,
+      city,
+      pincode,
+      paymentMethod
+    });
 
     window.location.href = response.data.url;
   } catch (err) {
