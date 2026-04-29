@@ -18,20 +18,20 @@ function SalesAnalytics() {
       .then((res) => {
         const grouped = {};
 
-        res.data.forEach(order => {
-          if (!order.createdAt) return;
-
-          const date = new Date(order.createdAt).toLocaleDateString();
+        res.data.forEach((order, i) => {
+          const date = order.createdAt
+            ? new Date(order.createdAt).toLocaleDateString()
+            : `Order ${i + 1}`;
 
           grouped[date] = (grouped[date] || 0) + order.totalAmount;
         });
 
-        const result = Object.keys(grouped).map(date => ({
-          date,
-          sales: grouped[date]
-        }));
-
-        setData(result);
+        setData(
+          Object.keys(grouped).map(key => ({
+            date: key,
+            sales: grouped[key]
+          }))
+        );
       })
       .catch(err => console.log(err));
   }, []);
