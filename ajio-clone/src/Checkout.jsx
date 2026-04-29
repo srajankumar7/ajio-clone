@@ -16,28 +16,6 @@ function Checkout({ userId }) {
   const [pincode, setPincode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  axios.post("https://ajio-clone-1v00.onrender.com/order", {
-      userId,
-      items: cartItems,
-      totalAmount: total,
-      name,
-      email,
-      mobile,
-      address,
-      city,
-      pincode,
-      paymentMethod
-    })
-      .then(() => {
-        alert("Order placed successfully");
-        navigate("/my-orders");
-      })
-      
-      .catch((err) => {
-        console.log(err.response?.data || err.message);
-        alert("Order failed");
-      });
-
   const makePayment = async () => {
   
   try {
@@ -83,7 +61,23 @@ function Checkout({ userId }) {
       await makePayment();
       return;
     }
-    
+    axios.post("https://ajio-clone-1v00.onrender.com/order", {
+      userId,
+      items: cartItems,
+      totalAmount: total,
+      name,
+      email,
+      mobile,
+      address,
+      city,
+      pincode,
+      paymentMethod
+    })
+      .then(() => alert("Order placed successfully"))
+      .catch((err) => {
+        console.log(err.response?.data || err.message);
+        alert("Order failed");
+      });
   }
   return (
     <div className="checkout-container">
