@@ -18,27 +18,30 @@ function SalesAnalytics() {
       .then((res) => {
         const grouped = {};
 
-        res.data.forEach((order, i) => {
-          const date = order.createdAt
-            ? new Date(order.createdAt).toLocaleDateString()
-            : `Order ${i + 1}`;
+        res.data.forEach(order => {
+          if (!order.createdAt) return;
 
-          grouped[date] = (grouped[date] || 0) + order.totalAmount;
+          const date = new Date(order.createdAt).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short"
+          });
+
+          grouped[date] = (grouped[date] || 0) + Number(order.totalAmount);
         });
 
-        setData(
-          Object.keys(grouped).map(key => ({
-            date: key,
-            sales: grouped[key]
-          }))
-        );
+        const result = Object.keys(grouped).map(date => ({
+          date,
+          sales: grouped[date]
+        }));
+
+        setData(result);
       })
       .catch(err => console.log(err));
   }, []);
 
   return (
     <div style={{ width: "90%", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Sales Analysis</h2>
+      <h2 style={{ textAlign: "center" }}>Date-wise Sales</h2>
 
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data}>
@@ -46,7 +49,7 @@ function SalesAnalytics() {
           <XAxis dataKey="date" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="sales" />
+          <Bar dataKey="sales" radius={[10, 10, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
