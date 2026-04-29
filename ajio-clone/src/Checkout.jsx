@@ -75,9 +75,14 @@ function Checkout({ userId }) {
     })
       .then((res) => {
         console.log(res);
-        alert("Order placed successfully");
+
         navigate("/my-orders");
+
+        setTimeout(() => {
+          alert("Order placed successfully");
+        }, 200);
       })
+      
       .catch((err) => {
         console.log(err.response?.data || err.message);
         alert("Order failed");
