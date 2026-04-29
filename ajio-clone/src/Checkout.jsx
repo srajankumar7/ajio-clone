@@ -16,33 +16,11 @@ function Checkout({ userId }) {
   const [pincode, setPincode] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  const makePayment = async () => {
-    try {
-      const response = await axios.post(
-        "https://ajio-clone-1v00.onrender.com/order",
-        {
-          userId,
-          items: cartItems,
-          totalAmount: total,
-          name,
-          email,
-          mobile,
-          address,
-          city,
-          pincode,
-          paymentMethod
-        }
-      );
-
-      window.location.href = response.data.url;
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (!userId) {
-      alert("Please login first");
       navigate("/login");
       return;
     }
@@ -62,18 +40,12 @@ function Checkout({ userId }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!userId) {
-      alert("Please login first");
-      return;
-    }
+    if (!userId) return;
 
-    if (paymentMethod === "online") {
-      await makePayment();
-      return;
-    }
+    setLoading(true); 
 
-    axios
-      .post("https://ajio-clone-1v00.onrender.com/order", {
+    try {
+      await axios.post("https://ajio-clone-1v00.onrender.com/order", {
         userId,
         items: cartItems,
         totalAmount: total,
@@ -84,85 +56,63 @@ function Checkout({ userId }) {
         city,
         pincode,
         paymentMethod
-      })
-      .then(() => {
-        window.alert("Order placed successfully");
-        window.location.href = "/my-orders";
-      })
-      
-      .catch((err) => {
-        console.log(err.response?.data || err.message);
-        alert("Order failed");
       });
+
+      setLoading(false);
+      setShowPopup(true);
+
+      setTimeout(() => {
+        navigate("/my-orders");
+      }, 1500);
+
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
+      alert("Order failed");
+    }
   };
 
   return (
     <div className="checkout-container">
+
+      {loading && <div className="loader">Placing Order...</div>}
+
+      {showPopup && (
+        <div className="popup">
+          <div className="popup-box">
+            <h3> Order Placed Successfully</h3>
+          </div>
+        </div>
+      )}
+
       <h2>Checkout</h2>
 
       <h3>Order summary</h3>
       {cartItems.map((item) => (
         <div key={item._id} className="checkout-item">
           <span>{item.name}</span>
-          <span>
-            ₹{item.price} × {item.quantity}
-          </span>
+          <span>₹{item.price} * {item.quantity}</span>
         </div>
       ))}
 
       <h3>Total: ₹{total}</h3>
 
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <input placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} />
+        <input placeholder="Mobile" value={mobile} onChange={(e) => setMobile(e.target.value)} />
+        <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <textarea placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
+        <input placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} />
+        <input placeholder="Pincode" value={pincode} onChange={(e) => setPincode(e.target.value)} />
 
-        <input
-          type="text"
-          placeholder="Mobile Number"
-          value={mobile}
-          onChange={(e) => setMobile(e.target.value)}
-        />
-
-        <input
-          type="text"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <textarea
-          placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-        />
-
-        <input
-          type="text"
-          placeholder="City"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-
-        <input
-          type="text"
-          placeholder="Pincode"
-          value={pincode}
-          onChange={(e) => setPincode(e.target.value)}
-        />
-
-        <select
-          value={paymentMethod}
-          onChange={(e) => setPaymentMethod(e.target.value)}
-        >
+        <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
           <option value="cod">Cash On Delivery</option>
           <option value="online">Online Payment</option>
         </select>
 
-        <button type="submit">Place Order</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Placing..." : "Place Order"}
+        </button>
       </form>
     </div>
   );
