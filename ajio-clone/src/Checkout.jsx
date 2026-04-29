@@ -51,7 +51,7 @@ function Checkout({ userId }) {
     });
   }, [userId, navigate]);
   
-  const handleSubmit =async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userId) {
       alert("Please login first");
@@ -59,10 +59,12 @@ function Checkout({ userId }) {
     }
     if (paymentMethod === "online") {
       await makePayment();
-      return; 
+      return;
     }
     axios.post("https://ajio-clone-1v00.onrender.com/order", {
       userId,
+      items: cartItems,
+      totalAmount: total,
       name,
       email,
       mobile,
@@ -71,13 +73,16 @@ function Checkout({ userId }) {
       pincode,
       paymentMethod
     })
-    .then(() => {
-      alert("Order placed successfully");
-      navigate("/");
-    })
-    .catch((err) => console.log(err));
-  };
-
+      .then((res) => {
+        console.log(res);
+        alert("Order placed successfully");
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err.response?.data || err.message);
+        alert("Order failed");
+      });
+  }
   return (
     <div className="checkout-container">
       <h2>Checkout</h2>

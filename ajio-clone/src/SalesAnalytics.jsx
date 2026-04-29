@@ -26,7 +26,7 @@ function SalesAnalytics() {
             month: "short"
           });
 
-          grouped[date] = (grouped[date] || 0) + Number(order.totalAmount);
+          grouped[date] = (grouped[date] || 0) + Number(order.totalAmount.fixed(2));
         });
 
         const result = Object.keys(grouped).map(date => ({
@@ -41,7 +41,7 @@ function SalesAnalytics() {
 
   return (
     <div style={{ width: "90%", margin: "auto" }}>
-      <h2 style={{ textAlign: "center" }}>Date-wise Sales</h2>
+      <h2 style={{ textAlign: "center" }}> Sales Analytics</h2>
 
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data}>
