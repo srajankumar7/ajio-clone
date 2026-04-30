@@ -638,9 +638,7 @@ text-align: center;
   padding: 12px;
   border-bottom: 1px solid #eee;
 }
-.user-table tr:hover {
-  background-color: #f9f9f9;
-}
+
 .dlt-btn{
   padding: 6px 12px;
   background-color: #ff4d4f;
