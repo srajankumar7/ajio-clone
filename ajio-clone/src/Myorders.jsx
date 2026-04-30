@@ -31,7 +31,9 @@ function MyOrders() {
                   {new Date(order.createdAt).toLocaleDateString()}
                 </p>
               </div>
-                    
+                    <div className="order-status">
+                    {order.status || "Pending"}
+                    </div>
                 </div>
 
             <div className="order-items">

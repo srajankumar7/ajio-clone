@@ -280,6 +280,17 @@ app.post("/create-checkout-session", async (req, res) => {
 });
 
 
+app.get("/users",async (req, res) => {
+    const users = await UserModel.find();
+    res.json(users);
+});
+
+app.delete("/users/:id", async (req, res) => {
+  await UserModel.findByIdAndDelete(req.params.id);
+  res.json("User deleted");
+});
+
+
 
 
 

@@ -35,7 +35,7 @@ function SalesAnalytics() {
           sales: Number(grouped[date].toFixed(2))
         }));
 
-        // sort by date
+        //sort by date
         result.sort((a, b) => new Date(a.date) - new Date(b.date));
 
         setData(result);
