@@ -24,7 +24,6 @@ function ManageUser() {
             <table className="user-table">
                 <thead>
                     <tr>
-                        <th>Name</th>
                         <th>Mobile</th>
                         <th>Actions</th>
                     </tr>
@@ -32,7 +31,6 @@ function ManageUser() {
                 <tbody>
                     {users.map((user) => (
                         <tr key={user._id}>
-                            <td>{user.name || "N/A"}</td>
                             <td>{user.mobile || "N/A"}</td>
                             <td>    
                                 <button className="dlt-btn" onClick={() => handleDelete(user._id)}>
