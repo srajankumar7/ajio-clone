@@ -247,7 +247,7 @@ text-align: center;
   border-radius: 4px;
 }
 .details-container{
-  width: 88%;
+  width: 90%;
   margin: 40px auto;
   display: flex;
   gap: 70px;
@@ -259,15 +259,15 @@ text-align: center;
 
 .details-left img{
   width: 430px;
-  height: 600px;
+  height: 620px;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 12px;
   background: white;
 }
 
 .details-right{
   flex: 1;
-  padding-top: 40px;
+  padding-top: 50px;
 }
 
 .brand-name{
@@ -278,65 +278,64 @@ text-align: center;
 }
 
 .details-right h2{
-  font-size: 52px;
-  margin-bottom: 35px;
+  font-size: 56px;
   color: #111;
+  margin-bottom: 40px;
 }
 
 .price-box{
-  margin-bottom: 35px;
+  margin-bottom: 30px;
 }
 
 .details-right h3{
-  font-size: 48px;
-  margin-bottom: 14px;
+  font-size: 52px;
   color: #000;
+  margin-bottom: 12px;
 }
 
 .gst-text{
-  color: #666;
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-
-.offer-text{
-  color: green;
-  font-size: 16px;
-  font-weight: 600;
+  color: #555;
+  font-size: 17px;
 }
 
 .cart-btn{
-  width: 320px;
+  width: 340px;
   padding: 18px;
   background: black;
   color: white;
   border: none;
+  border-radius: 8px;
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
   transition: 0.3s;
-  margin-bottom: 40px;
-  border-radius: 8px;
+  margin-top: 10px;
 }
 
 .cart-btn:hover{
   background: #222;
-  transform: scale(1.02);
 }
 
 .delivery-box{
-  background: #ececec;
-  padding: 28px;
-  border-radius: 14px;
-  width: 100%;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin-top: 35px;
+  border: 1px solid #ddd;
+  width: 420px;
 }
 
 .delivery-box h4{
-  font-size: 28px;
-  margin-bottom: 20px;
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #111;
 }
 
-
+.delivery-box p{
+  font-size: 16px;
+  color: #555;
+  margin: 10px 0;
+}
 .cart-btn{
   padding: 12px 25px;
   background: black;

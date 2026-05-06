@@ -39,20 +39,24 @@ function ProductDetails({ userId }) {
 
   return (
     <div className="details-container">
+
       <div className="details-left">
         <img src={product.image} alt={product.name} />
       </div>
 
       <div className="details-right">
+
         <p className="brand-name">AJIO</p>
 
         <h2>{product.name}</h2>
 
-        <h3>₹ {product.price}</h3>
+        <div className="price-box">
+          <h3>₹ {product.price}</h3>
 
-        <p className="tax-text">
-         taxes Excluded 
-        </p>
+          <p className="gst-text">
+            GST and other taxes will be calculated at checkout
+          </p>
+        </div>
 
         <button
           className="cart-btn"
@@ -62,11 +66,13 @@ function ProductDetails({ userId }) {
         </button>
 
         <div className="delivery-box">
-          <h4>Delivery Details</h4>
-          <p>Free delivery available</p>
+          <h4>Delivery & Services</h4>
+
+          <p>Free Delivery Available</p>
           <p>Cash on Delivery Available</p>
-          <p>Easy 7 days return</p>
+          <p>7 Days Easy Return</p>
         </div>
+
       </div>
     </div>
   );
