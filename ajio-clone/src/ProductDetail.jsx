@@ -54,7 +54,7 @@ function ProductDetails({ userId }) {
           <h3>₹ {product.price}</h3>
 
           <p className="gst-text">
-            GST and other taxes will be calculated at checkout
+            GST and other taxes are Excluded
           </p>
         </div>
 
