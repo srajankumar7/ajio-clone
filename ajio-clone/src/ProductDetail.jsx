@@ -51,7 +51,7 @@ function ProductDetails({ userId }) {
         <h3>₹ {product.price}</h3>
 
         <p className="tax-text">
-          Inclusive of all taxes
+         taxes Excluded 
         </p>
 
         <button

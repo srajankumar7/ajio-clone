@@ -247,83 +247,99 @@ text-align: center;
   border-radius: 4px;
 }
 .details-container{
-  width: 90%;
-  margin: 50px auto;
+  width: 88%;
+  margin: 40px auto;
   display: flex;
-  gap: 60px;
+  gap: 70px;
   align-items: flex-start;
-  background: #fff;
+  background: #f5f5f5;
   padding: 40px;
-  border-radius: 12px;
+  border-radius: 16px;
 }
 
 .details-left img{
-  width: 420px;
-  height: 520px;
+  width: 430px;
+  height: 600px;
   object-fit: cover;
-  border-radius: 12px;
-  background: #f5f5f5;
+  border-radius: 14px;
+  background: white;
 }
 
 .details-right{
   flex: 1;
-  padding-top: 20px;
+  padding-top: 40px;
 }
 
 .brand-name{
-  font-size: 14px;
-  color: gray;
-  margin-bottom: 10px;
-  letter-spacing: 1px;
-}
-
-.details-right h2{
-  font-size: 34px;
+  font-size: 15px;
+  color: #777;
+  letter-spacing: 2px;
   margin-bottom: 20px;
 }
 
-.details-right h3{
-  font-size: 32px;
-  margin-bottom: 10px;
+.details-right h2{
+  font-size: 52px;
+  margin-bottom: 35px;
   color: #111;
 }
 
-.tax-text{
-  color: green;
-  font-size: 14px;
-  margin-bottom: 25px;
+.price-box{
+  margin-bottom: 35px;
 }
 
-.cart-btn{
-  width: 250px;
-  padding: 16px;
-  background: black;
-  color: white;
-  border: none;
+.details-right h3{
+  font-size: 48px;
+  margin-bottom: 14px;
+  color: #000;
+}
+
+.gst-text{
+  color: #666;
   font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-  margin-bottom: 30px;
-}
-
-.cart-btn:hover{
-  background: #333;
-}
-
-.delivery-box{
-  background: #f8f8f8;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.delivery-box h4{
   margin-bottom: 10px;
 }
 
+.offer-text{
+  color: green;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cart-btn{
+  width: 320px;
+  padding: 18px;
+  background: black;
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-bottom: 40px;
+  border-radius: 8px;
+}
+
+.cart-btn:hover{
+  background: #222;
+  transform: scale(1.02);
+}
+
+.delivery-box{
+  background: #ececec;
+  padding: 28px;
+  border-radius: 14px;
+  width: 100%;
+}
+
+.delivery-box h4{
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
 .delivery-box p{
-  color: #555;
-  margin: 8px 0;
+  color: #444;
+  margin: 14px 0;
+  font-size: 18px;
 }
 .cart-btn{
   padding: 12px 25px;
