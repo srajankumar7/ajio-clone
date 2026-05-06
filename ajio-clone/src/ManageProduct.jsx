@@ -44,8 +44,8 @@ function ManageProduct() {
                             <td>
                                 <img src={product.image} alt={product.name} width={"100"} /></td>
                             <td>
-                                <Link to={`/edit-product/${product._id}`}><button>Edit</button></Link>
-                                <button style={{color:"red"}} onClick={() => handleDelete(product._id)}>Delete</button>
+                                <Link to={`/edit-product/${product._id}`}><button style={{backgroundColor:"black", color:"white"}}>Edit</button></Link>
+                                <button style={{backgroundColor:"red", color:"white"}} onClick={() => handleDelete(product._id)}>Delete</button>
                             </td>
                         </tr>
                     ))}
