@@ -247,19 +247,20 @@ text-align: center;
   border-radius: 4px;
 }
 .details-container{
-  width: 90%;
-  margin: 40px auto;
+  width: 92%;
+  margin: 20px auto;
   display: flex;
-  gap: 70px;
-  align-items: flex-start;
+  gap: 50px;
+  align-items: center;
   background: #f5f5f5;
-  padding: 40px;
-  border-radius: 16px;
+  padding: 30px;
+  border-radius: 14px;
+  min-height: 75vh;
 }
 
 .details-left img{
-  width: 430px;
-  height: 620px;
+  width: 360px;
+  height: 500px;
   object-fit: cover;
   border-radius: 12px;
   background: white;
@@ -267,40 +268,40 @@ text-align: center;
 
 .details-right{
   flex: 1;
-  padding-top: 50px;
+  padding-top: 0;
 }
 
 .brand-name{
-  font-size: 15px;
+  font-size: 14px;
   color: #777;
   letter-spacing: 2px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .details-right h2{
-  font-size: 56px;
+  font-size: 70px;
   color: #111;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .price-box{
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 
 .details-right h3{
   font-size: 52px;
   color: #000;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .gst-text{
   color: #555;
-  font-size: 17px;
+  font-size: 16px;
 }
 
 .cart-btn{
-  width: 340px;
-  padding: 18px;
+  width: 320px;
+  padding: 16px;
   background: black;
   color: white;
   border: none;
@@ -314,27 +315,6 @@ text-align: center;
 
 .cart-btn:hover{
   background: #222;
-}
-
-.delivery-box{
-  background: white;
-  padding: 25px;
-  border-radius: 10px;
-  margin-top: 35px;
-  border: 1px solid #ddd;
-  width: 420px;
-}
-
-.delivery-box h4{
-  font-size: 22px;
-  margin-bottom: 15px;
-  color: #111;
-}
-
-.delivery-box p{
-  font-size: 16px;
-  color: #555;
-  margin: 10px 0;
 }
 .cart-btn{
   padding: 12px 25px;
