@@ -27,13 +27,8 @@ function App() {
   return (
     <BrowserRouter>
      {userRole !== "admin" && (
-    <Sheader
-      userId={userId}
-      setUserId={setUserId}
-      userRole={userRole}
-       setUserRole={setUserRole}
-        />
-      )}
+  <Sheader userId={userId} setUserId={setUserId} userRole={userRole}/>
+)}
 
       <Routes>
         <Route path="/" element={<Home />} />
