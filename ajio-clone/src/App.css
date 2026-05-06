@@ -247,27 +247,83 @@ text-align: center;
   border-radius: 4px;
 }
 .details-container{
+  width: 90%;
+  margin: 50px auto;
   display: flex;
+  gap: 60px;
+  align-items: flex-start;
+  background: #fff;
   padding: 40px;
-  gap: 50px;
-  align-items: center;
+  border-radius: 12px;
 }
+
 .details-left img{
-  height: 400px;
-  width: 350px;
+  width: 420px;
+  height: 520px;
   object-fit: cover;
+  border-radius: 12px;
+  background: #f5f5f5;
+}
+
+.details-right{
+  flex: 1;
+  padding-top: 20px;
+}
+
+.brand-name{
+  font-size: 14px;
+  color: gray;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.details-right h2{
+  font-size: 34px;
+  margin-bottom: 20px;
+}
+
+.details-right h3{
+  font-size: 32px;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.tax-text{
+  color: green;
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.cart-btn{
+  width: 250px;
+  padding: 16px;
+  background: black;
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-bottom: 30px;
+}
+
+.cart-btn:hover{
+  background: #333;
+}
+
+.delivery-box{
+  background: #f8f8f8;
+  padding: 20px;
   border-radius: 10px;
 }
-.details-right{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.details-right h2{
+
+.delivery-box h4{
   margin-bottom: 10px;
 }
-.details-right h3{
-  margin-bottom: 20px;
+
+.delivery-box p{
+  color: #555;
+  margin: 8px 0;
 }
 .cart-btn{
   padding: 12px 25px;

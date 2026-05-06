@@ -19,7 +19,6 @@ function SalesAnalytics() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-
     axios.get("https://ajio-clone-1v00.onrender.com/users")
       .then(res => setUsers(res.data))
       .catch(err => console.log(err));
@@ -30,15 +29,11 @@ function SalesAnalytics() {
 
     axios.get("https://ajio-clone-1v00.onrender.com/orders")
       .then((res) => {
-
         setOrders(res.data);
 
         const grouped = {};
-
         res.data.forEach((order) => {
-
           if (!order.createdAt) return;
-
           const date = new Date(order.createdAt).toLocaleDateString(
             "en-IN",
             {
@@ -46,7 +41,6 @@ function SalesAnalytics() {
               month: "short"
             }
           );
-
           grouped[date] =
             (grouped[date] || 0) + Number(order.totalAmount);
         });
@@ -55,13 +49,10 @@ function SalesAnalytics() {
           date,
           sales: Number(grouped[date].toFixed(2))
         }));
-
         result.sort((a, b) => new Date(a.date) - new Date(b.date));
-
         setData(result);
       })
       .catch(err => console.log(err));
-
   }, []);
 
   const totalRevenue = orders.reduce((sum, order) => {
