@@ -5,8 +5,10 @@ function Sheader({ userId, setUserId,setUserRole }) {
   const navigate = useNavigate();
   const handleLogout = () => {
     localStorage.removeItem("role");
+    localStorage.removeItem("userId");
     setUserId(null);
     setUserRole(null);
+    navigate("/login");
   };
 
     return (

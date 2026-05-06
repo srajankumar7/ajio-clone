@@ -21,14 +21,19 @@ import MyOrders from './Myorders.jsx';
 import SalesAnalytics from './SalesAnalytics.jsx';
 
 function App() {
-  const [userId, setUserId] = React.useState(null);
+  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [userRole, setUserRole] = React.useState(localStorage.getItem("role")); 
 
   return (
     <BrowserRouter>
      {userRole !== "admin" && (
-  <Sheader userId={userId} setUserId={setUserId} userRole={userRole}/>
-)}
+    <Sheader
+      userId={userId}
+      setUserId={setUserId}
+      userRole={userRole}
+       setUserRole={setUserRole}
+        />
+      )}
 
       <Routes>
         <Route path="/" element={<Home />} />
