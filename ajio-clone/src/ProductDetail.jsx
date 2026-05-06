@@ -65,14 +65,6 @@ function ProductDetails({ userId }) {
           ADD TO CART
         </button>
 
-        <div className="delivery-box">
-          <h4>Delivery & Services</h4>
-
-          <p>Free Delivery Available</p>
-          <p>Cash on Delivery Available</p>
-          <p>7 Days Easy Return</p>
-        </div>
-
       </div>
     </div>
   );
