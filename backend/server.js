@@ -9,16 +9,8 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const PDFDocument = require("pdfkit");
 const fs = require("fs");
 
-const nodemailer = require("nodemailer");
-const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
-  port: 587,
-  secure: false,
-  auth: {
-    user: process.env.ETHEREAL_EMAIL,
-    pass: process.env.ETHEREAL_PASS
-  }
-});
+const { Resend } = require("resend");
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const UserModel = require("./models/Users");
 const ProductModel = require("./models/Product");
@@ -59,7 +51,7 @@ app.get('/products', async (req, res) => {
 });
 
 app.delete('/products/:id', async (req, res) => {
-    const id  = req.params.id;
+    const id = req.params.id;
     await ProductModel.findByIdAndDelete(id);
     res.json("Product deleted");
 });
@@ -91,21 +83,21 @@ app.put('/update-product/:id', upload.single("image"), async (req, res) => {
   }
 });
 
-app.post("/cart", async(req, res)=> {
+app.post("/cart", async (req, res) => {
     const { userId, name, price, image } = req.body;
     if (!userId) {
         return res.status(400).json({ message: "User not logged in" });
     }
-    const existing = await Cart.findOne({userId, name });
+    const existing = await Cart.findOne({ userId, name });
     if (existing) {
         existing.quantity += 1;
         await existing.save();
         return res.json(existing);
     }
     const item = await Cart.create({
-       userId, name, price, image, quantity: 1
+        userId, name, price, image, quantity: 1
     });
-    res.json(item);
+    res.json(item)
 });
 
 app.get('/cart/:userId', async (req, res) => {
@@ -191,19 +183,20 @@ app.post("/order", async (req, res) => {
 
     stream.on("finish", async () => {
       try {
-        const info = await transporter.sendMail({
-          from: process.env.ETHEREAL_EMAIL,
+        await resend.emails.send({
+          from: "onboarding@resend.dev",
           to: email,
           subject: "Order Invoice",
-          text: `Your order placed successfully. Check the attached invoice for details. Total Amount: Rs.${totalAmount.toFixed(2)}`,
+          text: `Your order placed successfully. Total Amount: Rs.${totalAmount.toFixed(2)}`,
           attachments: [
             {
               filename: "invoice.pdf",
-              path: filePath
+              content: fs.readFileSync(filePath).toString("base64"),
+              encoding: "base64"
             }
           ]
         });
-        console.log("Preview URL:", nodemailer.getTestMessageUrl(info));
+        console.log("Invoice email sent to:", email);
         res.json(order);
       } catch (emailErr) {
         console.log("Email sending failed:", emailErr.message);
@@ -254,7 +247,9 @@ app.post("/create-checkout-session", async (req, res) => {
   const lineItems = cartItems.map((item) => ({
     price_data: {
       currency: "inr",
-      product_data: { name: item.name },
+      product_data: {
+        name: item.name,
+      },
       unit_amount: item.price * 100,
     },
     quantity: item.quantity,
@@ -269,6 +264,20 @@ app.post("/create-checkout-session", async (req, res) => {
   });
 
   res.json({ url: session.url });
+});
+
+app.get("/test-email", async (req, res) => {
+  try {
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: process.env.GMAIL_USER,
+      subject: "Test Email",
+      text: "Resend is working!"
+    });
+    res.json("Email sent!");
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get("/users", async (req, res) => {
