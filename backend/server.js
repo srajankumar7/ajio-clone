@@ -192,22 +192,31 @@ app.post("/order", async (req, res) => {
     doc.end();
 
     stream.on("finish", async () => {
-      const info = await transporter.sendMail({
-        from: process.env.GMAIL_USER,
-        to: email,
-        subject: "Order Invoice",
-        text: `Your order placed successfully check the attached invoice for details. Total Amount: Rs.${totalAmount.toFixed(2)}`,
-        attachments: [
-          {
-            filename: "invoice.pdf",
-            path: filePath
-          }
-        ]
-      });
+      try {
+        await transporter.sendMail({
+          from: process.env.GMAIL_USER,
+          to: email,
+          subject: "Order Invoice",
+          text: `Your order placed successfully. Check the attached invoice for details. Total Amount: Rs.${totalAmount.toFixed(2)}`,
+          attachments: [
+            {
+              filename: "invoice.pdf",
+              path: filePath
+            }
+          ]
+        });
 
-      console.log("Preview:", nodemailer.getTestMessageUrl(info));
+        console.log("Invoice email sent to:", email);
+        res.json(order);
+      } catch (emailErr) {
+        console.log("Email sending failed:", emailErr.message);
+        res.json(order);
+      }
+    });
 
-      res.json(order);
+    stream.on("error", (streamErr) => {
+      console.log("PDF stream error:", streamErr.message);
+      res.status(500).json({ error: "Failed to generate invoice PDF" });
     });
 
   } catch (err) {
@@ -288,12 +297,6 @@ app.delete("/users/:id", async (req, res) => {
   await UserModel.findByIdAndDelete(req.params.id);
   res.json("User deleted");
 });
-
-
-
-
-
-
 
 
 app.listen(3001, () => {
