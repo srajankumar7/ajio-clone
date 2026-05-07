@@ -11,8 +11,10 @@ function Success() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
     if (called.current) return;
     called.current = true;
+
     const placeOrder = async () => {
 
       try {
@@ -44,12 +46,17 @@ function Success() {
           }
         );
 
+      } catch (err) {
+
+        console.log(err);
+
+      } finally {
+
         setLoading(false);
 
-      } catch (err) {
-        console.log(err);
       }
     };
+
     placeOrder();
 
   }, [navigate, params]);
@@ -66,20 +73,21 @@ function Success() {
           </>
         ) : (
           <>
-            <h2>Payment Successful</h2>
-            <p>
-              Your order has been placed successfully.
-            </p>
-            <p>
-              Invoice has been sent to your email.
-            </p>
+            <h2>Payment Successful ✅</h2>
+
+            <p>Your order has been placed successfully.</p>
+
+            <p>Invoice has been sent to your email.</p>
+
             <button
               className="success-btn"
-              onClick={() => navigate("/")}>
+              onClick={() => navigate("/")}
+            >
               Go to Home
             </button>
           </>
         )}
+
       </div>
 
     </div>
