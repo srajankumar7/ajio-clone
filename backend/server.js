@@ -171,12 +171,14 @@ app.post("/order", async (req, res) => {
 
     await Cart.deleteMany({ userId });
 
+    // create invoices folder
     if (!fs.existsSync("./invoices")) {
       fs.mkdirSync("./invoices");
     }
 
     const filePath = `./invoices/invoice_${Date.now()}.pdf`;
 
+    // create pdf
     const doc = new PDFDocument();
 
     doc.pipe(fs.createWriteStream(filePath));
@@ -194,7 +196,7 @@ app.post("/order", async (req, res) => {
 
     doc.moveDown();
 
-    doc.fontSize(14).text("Items Ordered");
+    doc.fontSize(14).text("Items Ordered:");
 
     cartItems.forEach((item) => {
       const itemTotal =
@@ -213,26 +215,20 @@ app.post("/order", async (req, res) => {
 
     doc.end();
 
-    // wait small time for pdf generation
+    // wait for pdf creation
     setTimeout(async () => {
 
-      const info = await transporter.sendMail({
-        from: process.env.ETHEREAL_EMAIL,
+      await transporter.sendMail({
+        from: process.env.GMAIL_USER,
         to: email,
         subject: "Order Invoice - AJIO",
 
-        html: `
-          <h2>Order Placed Successfully ✅</h2>
+        text: `
+Order placed successfully.
 
-          <p>Hello <b>${name}</b>,</p>
+Total Amount: Rs.${totalAmount.toFixed(2)}
 
-          <p>
-            Your order has been placed successfully.
-          </p>
-
-          <p>
-            Please find attached invoice PDF.
-          </p>
+Payment Method: ${paymentMethod}
         `,
 
         attachments: [
@@ -242,11 +238,6 @@ app.post("/order", async (req, res) => {
           }
         ]
       });
-
-      console.log(
-        "Preview URL:",
-        nodemailer.getTestMessageUrl(info)
-      );
 
       res.json(order);
 
