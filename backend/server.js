@@ -11,13 +11,18 @@ const fs = require("fs");
 
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    auth: {
-        user: process.env.ETHEREAL_EMAIL,
-        pass: process.env.ETHEREAL_PASS
-    }
-    });
+  host: "smtp.ethereal.email",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.ETHEREAL_EMAIL,
+    pass: process.env.ETHEREAL_PASS
+  },
+  tls: {
+    rejectUnauthorized: false
+  },
+  connectionTimeout: 10000
+});
 
 
 const UserModel = require("./models/Users");
@@ -130,32 +135,19 @@ app.delete('/cart/:id', async (req, res) => {
 
 app.post("/order", async (req, res) => {
   try {
-    const {
-      userId,
-      name,
-      email,
-      mobile,
-      address,
-      city,
-      pincode,
-      paymentMethod
-    } = req.body;
+    const { userId, name, email, mobile, address, city, pincode, paymentMethod } = req.body;
 
     const cartItems = await Cart.find({ userId });
 
     if (cartItems.length === 0) {
-      return res.status(400).json({
-        message: "Cart is empty"
-      });
+      return res.status(400).json({ message: "Cart is empty" });
     }
 
     const subtotal = cartItems.reduce((sum, item) => {
       return sum + item.price * item.quantity;
-    }, 0);
-
+    }, 0);    
     const gst = subtotal * 0.18;
     const totalAmount = subtotal + gst;
-
     const order = await Order.create({
       userId,
       items: cartItems,
@@ -171,22 +163,18 @@ app.post("/order", async (req, res) => {
 
     await Cart.deleteMany({ userId });
 
-    // create invoices folder
     if (!fs.existsSync("./invoices")) {
       fs.mkdirSync("./invoices");
     }
 
     const filePath = `./invoices/invoice_${Date.now()}.pdf`;
 
-    // create pdf
     const doc = new PDFDocument();
+    const stream = fs.createWriteStream(filePath);
 
-    doc.pipe(fs.createWriteStream(filePath));
+    doc.pipe(stream);
 
-    doc.fontSize(20).text("AJIO INVOICE", {
-      align: "center"
-    });
-
+    doc.fontSize(18).text("INVOICE", { align: "center" });
     doc.moveDown();
 
     doc.fontSize(12).text(`Name: ${name}`);
@@ -195,42 +183,26 @@ app.post("/order", async (req, res) => {
     doc.text(`Address: ${address}, ${city} - ${pincode}`);
 
     doc.moveDown();
-
-    doc.fontSize(14).text("Items Ordered:");
+    doc.text("Items:");
 
     cartItems.forEach((item) => {
-      const itemTotal =
-        item.price * item.quantity;
-
-      doc.text(
-        `${item.name} - Rs.${item.price} × ${item.quantity} = Rs.${itemTotal}`
-      );
+      const itemTotal = item.price * item.quantity;
+      doc.text(`${item.name} - Rs.${item.price} x ${item.quantity} = Rs.${itemTotal}`);
     });
 
     doc.moveDown();
-
     doc.text(`Subtotal: Rs.${subtotal}`);
     doc.text(`GST (18%): Rs.${gst.toFixed(2)}`);
-    doc.text(`Total Amount: Rs.${totalAmount.toFixed(2)}`);
+    doc.text(`Total: Rs.${totalAmount.toFixed(2)}`);
 
     doc.end();
 
-    // wait for pdf creation
-    setTimeout(async () => {
-
-      await transporter.sendMail({
-        from: process.env.GMAIL_USER,
+    stream.on("finish", async () => {
+      const info = await transporter.sendMail({
+        from: process.env.ETHEREAL_EMAIL,
         to: email,
-        subject: "Order Invoice - AJIO",
-
-        text: `
-Order placed successfully.
-
-Total Amount: Rs.${totalAmount.toFixed(2)}
-
-Payment Method: ${paymentMethod}
-        `,
-
+        subject: "Order Invoice",
+        text: `Your order placed successfully check the attached invoice for details. Total Amount: Rs.${totalAmount.toFixed(2)}`,
         attachments: [
           {
             filename: "invoice.pdf",
@@ -239,18 +211,14 @@ Payment Method: ${paymentMethod}
         ]
       });
 
+      console.log("Preview:", nodemailer.getTestMessageUrl(info));
+
       res.json(order);
-
-    }, 2000);
-
-  } catch (err) {
-
-    console.log(err);
-
-    res.status(500).json({
-      error: err.message
     });
 
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
   }
 });
 
