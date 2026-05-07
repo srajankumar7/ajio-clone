@@ -11,13 +11,14 @@ const fs = require("fs");
 
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.ethereal.email",
+  port: 587,
+  secure: false,
   auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS
+    user: process.env.ETHEREAL_EMAIL,
+    pass: process.env.ETHEREAL_PASS
   }
 });
-
 
 const UserModel = require("./models/Users");
 const ProductModel = require("./models/Product");
@@ -29,8 +30,6 @@ app.use(cors());
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI)
-
-
 
 app.post('/signin', async (req, res) => {
     const { mobile } = req.body;
@@ -53,7 +52,7 @@ app.post('/add-product', upload.single("image"), async (req, res) => {
     res.status(500).send(err.message);
   }
 });
- 
+
 app.get('/products', async (req, res) => {
     const products = await ProductModel.find();
     res.json(products);
@@ -64,6 +63,7 @@ app.delete('/products/:id', async (req, res) => {
     await ProductModel.findByIdAndDelete(id);
     res.json("Product deleted");
 });
+
 app.get('/products/:id', async (req, res) => {
     const id = req.params.id;
     const products = await ProductModel.findById(id);
@@ -73,8 +73,7 @@ app.get('/products/:id', async (req, res) => {
 app.put('/update-product/:id', upload.single("image"), async (req, res) => {
   try {
     const id = req.params.id;
-    let updateData =
-    {
+    let updateData = {
       name: req.body.name,
       price: req.body.price,
       category: req.body.category,
@@ -95,7 +94,7 @@ app.put('/update-product/:id', upload.single("image"), async (req, res) => {
 app.post("/cart", async(req, res)=> {
     const { userId, name, price, image } = req.body;
     if (!userId) {
-        return res.status(400).json({ message: "User not logged in" }); 
+        return res.status(400).json({ message: "User not logged in" });
     }
     const existing = await Cart.findOne({userId, name });
     if (existing) {
@@ -104,15 +103,16 @@ app.post("/cart", async(req, res)=> {
         return res.json(existing);
     }
     const item = await Cart.create({
-       userId, name,price,image,quantity:1
+       userId, name, price, image, quantity: 1
     });
-    res.json(item)
-    
+    res.json(item);
 });
+
 app.get('/cart/:userId', async (req, res) => {
     const data = await Cart.find({ userId: req.params.userId });
     res.json(data);
 });
+
 app.put("/cart/:id", async (req, res) => {
     const { quantity } = req.body;
     const updated = await Cart.findByIdAndUpdate(
@@ -122,9 +122,10 @@ app.put("/cart/:id", async (req, res) => {
     );
     res.json(updated);
 });
+
 app.delete('/cart/:id', async (req, res) => {
     await Cart.findByIdAndDelete(req.params.id);
-    res.json(" deleted");
+    res.json("deleted");
 });
 
 app.post("/order", async (req, res) => {
@@ -139,9 +140,10 @@ app.post("/order", async (req, res) => {
 
     const subtotal = cartItems.reduce((sum, item) => {
       return sum + item.price * item.quantity;
-    }, 0);    
+    }, 0);
     const gst = subtotal * 0.18;
     const totalAmount = subtotal + gst;
+
     const order = await Order.create({
       userId,
       items: cartItems,
@@ -162,7 +164,6 @@ app.post("/order", async (req, res) => {
     }
 
     const filePath = `./invoices/invoice_${Date.now()}.pdf`;
-
     const doc = new PDFDocument();
     const stream = fs.createWriteStream(filePath);
 
@@ -170,12 +171,10 @@ app.post("/order", async (req, res) => {
 
     doc.fontSize(18).text("INVOICE", { align: "center" });
     doc.moveDown();
-
     doc.fontSize(12).text(`Name: ${name}`);
     doc.text(`Email: ${email}`);
     doc.text(`Mobile: ${mobile}`);
     doc.text(`Address: ${address}, ${city} - ${pincode}`);
-
     doc.moveDown();
     doc.text("Items:");
 
@@ -188,13 +187,12 @@ app.post("/order", async (req, res) => {
     doc.text(`Subtotal: Rs.${subtotal}`);
     doc.text(`GST (18%): Rs.${gst.toFixed(2)}`);
     doc.text(`Total: Rs.${totalAmount.toFixed(2)}`);
-
     doc.end();
 
     stream.on("finish", async () => {
       try {
-        await transporter.sendMail({
-          from: process.env.GMAIL_USER,
+        const info = await transporter.sendMail({
+          from: process.env.ETHEREAL_EMAIL,
           to: email,
           subject: "Order Invoice",
           text: `Your order placed successfully. Check the attached invoice for details. Total Amount: Rs.${totalAmount.toFixed(2)}`,
@@ -205,8 +203,7 @@ app.post("/order", async (req, res) => {
             }
           ]
         });
-
-        console.log("Invoice email sent to:", email);
+        console.log("Preview URL:", nodemailer.getTestMessageUrl(info));
         res.json(order);
       } catch (emailErr) {
         console.log("Email sending failed:", emailErr.message);
@@ -229,6 +226,7 @@ app.get("/orders", async (req, res) => {
     const orders = await Order.find();
     res.json(orders);
 });
+
 app.get("/orders/:userId", async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.params.userId }).sort({ _id: -1 });
@@ -236,39 +234,27 @@ app.get("/orders/:userId", async (req, res) => {
   }
   catch (err) {
     console.log(err);
-    res.status(500).send("Erro fetching orders");
+    res.status(500).send("Error fetching orders");
   }
 });
+
 app.put("/order/:id", async (req, res) => {
     const { status } = req.body;
-
     const updated = await Order.findByIdAndUpdate(
         req.params.id,
         { status },
         { new: true }
     );
-
     res.json(updated);
 });
 
 app.post("/create-checkout-session", async (req, res) => {
-  const {
-    cartItems,
-    userId,
-    name,
-    email,
-    mobile,
-    address,
-    city,
-    pincode
-  } = req.body;
+  const { cartItems, userId, name, email, mobile, address, city, pincode } = req.body;
 
   const lineItems = cartItems.map((item) => ({
     price_data: {
       currency: "inr",
-      product_data: {
-        name: item.name,
-      },
+      product_data: { name: item.name },
       unit_amount: item.price * 100,
     },
     quantity: item.quantity,
@@ -278,17 +264,14 @@ app.post("/create-checkout-session", async (req, res) => {
     payment_method_types: ["card"],
     line_items: lineItems,
     mode: "payment",
-
     success_url: `https://ajiioclone.netlify.app/success?userId=${userId}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&mobile=${encodeURIComponent(mobile)}&address=${encodeURIComponent(address)}&city=${encodeURIComponent(city)}&pincode=${encodeURIComponent(pincode)}`,
-
     cancel_url: "https://ajiioclone.netlify.app/cancel",
   });
 
   res.json({ url: session.url });
 });
 
-
-app.get("/users",async (req, res) => {
+app.get("/users", async (req, res) => {
     const users = await UserModel.find();
     res.json(users);
 });
@@ -297,7 +280,6 @@ app.delete("/users/:id", async (req, res) => {
   await UserModel.findByIdAndDelete(req.params.id);
   res.json("User deleted");
 });
-
 
 app.listen(3001, () => {
     console.log("Server is running on port 3001");
