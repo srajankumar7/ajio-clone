@@ -11,7 +11,9 @@ const fs = require("fs");
 
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASS
@@ -129,34 +131,19 @@ app.delete('/cart/:id', async (req, res) => {
 
 app.post("/order", async (req, res) => {
   try {
-
-    const {
-      userId,
-      name,
-      email,
-      mobile,
-      address,
-      city,
-      pincode,
-      paymentMethod
-    } = req.body;
+    const { userId, name, email, mobile, address, city, pincode, paymentMethod } = req.body;
 
     const cartItems = await Cart.find({ userId });
 
     if (cartItems.length === 0) {
-      return res.status(400).json({
-        message: "Cart is empty"
-      });
+      return res.status(400).json({ message: "Cart is empty" });
     }
 
     const subtotal = cartItems.reduce((sum, item) => {
       return sum + item.price * item.quantity;
-    }, 0);
-
+    }, 0);    
     const gst = subtotal * 0.18;
-
     const totalAmount = subtotal + gst;
-
     const order = await Order.create({
       userId,
       items: cartItems,
@@ -179,84 +166,64 @@ app.post("/order", async (req, res) => {
     const filePath = `./invoices/invoice_${Date.now()}.pdf`;
 
     const doc = new PDFDocument();
+    const stream = fs.createWriteStream(filePath);
 
-    doc.pipe(fs.createWriteStream(filePath));
+    doc.pipe(stream);
 
-    doc.fontSize(22).text("AJIO INVOICE", {
-      align: "center"
-    });
-
+    doc.fontSize(18).text("INVOICE", { align: "center" });
     doc.moveDown();
 
-    doc.fontSize(12).text(`Customer Name: ${name}`);
+    doc.fontSize(12).text(`Name: ${name}`);
     doc.text(`Email: ${email}`);
     doc.text(`Mobile: ${mobile}`);
-    doc.text(`Address: ${address}`);
-    doc.text(`City: ${city}`);
-    doc.text(`Pincode: ${pincode}`);
+    doc.text(`Address: ${address}, ${city} - ${pincode}`);
 
     doc.moveDown();
-
-    doc.fontSize(16).text("Ordered Items");
+    doc.text("Items:");
 
     cartItems.forEach((item) => {
-
-      const itemTotal =
-        item.price * item.quantity;
-
-      doc.text(
-        `${item.name} | Rs.${item.price} x ${item.quantity} = Rs.${itemTotal}`
-      );
-
+      const itemTotal = item.price * item.quantity;
+      doc.text(`${item.name} - Rs.${item.price} x ${item.quantity} = Rs.${itemTotal}`);
     });
 
     doc.moveDown();
-
     doc.text(`Subtotal: Rs.${subtotal}`);
     doc.text(`GST (18%): Rs.${gst.toFixed(2)}`);
-    doc.text(`Total Amount: Rs.${totalAmount.toFixed(2)}`);
-
-    doc.moveDown();
-
-    doc.text(`Payment Method: ${paymentMethod}`);
+    doc.text(`Total: Rs.${totalAmount.toFixed(2)}`);
 
     doc.end();
 
-    setTimeout(async () => {
+    stream.on("finish", async () => {
+      try {
+        await transporter.sendMail({
+          from: process.env.GMAIL_USER,
+          to: email,
+          subject: "Order Invoice",
+          text: `Your order placed successfully. Check the attached invoice for details. Total Amount: Rs.${totalAmount.toFixed(2)}`,
+          attachments: [
+            {
+              filename: "invoice.pdf",
+              path: filePath
+            }
+          ]
+        });
 
-      await transporter.sendMail({
-        from: process.env.GMAIL_USER,
-        to: email,
-        subject: "AJIO Order Invoice",
-
-        text: `
-Your order has been placed successfully.
-
-Total Amount: Rs.${totalAmount.toFixed(2)}
-
-Thank you for shopping with AJIO.
-        `,
-
-        attachments: [
-          {
-            filename: "invoice.pdf",
-            path: filePath
-          }
-        ]
-      });
-
-      res.json(order);
-
-    }, 2000);
-
-  } catch (err) {
-
-    console.log(err);
-
-    res.status(500).json({
-      error: err.message
+        console.log("Invoice email sent to:", email);
+        res.json(order);
+      } catch (emailErr) {
+        console.log("Email sending failed:", emailErr.message);
+        res.json(order);
+      }
     });
 
+    stream.on("error", (streamErr) => {
+      console.log("PDF stream error:", streamErr.message);
+      res.status(500).json({ error: "Failed to generate invoice PDF" });
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -332,12 +299,6 @@ app.delete("/users/:id", async (req, res) => {
   await UserModel.findByIdAndDelete(req.params.id);
   res.json("User deleted");
 });
-
-
-
-
-
-
 
 
 app.listen(3001, () => {
