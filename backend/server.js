@@ -224,6 +224,19 @@ app.post("/order", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+app.get("/test-email", async (req, res) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: process.env.GMAIL_USER,
+      subject: "Test",
+      text: "Gmail is working!"
+    });
+    res.json("Email sent!");
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 app.get("/orders", async (req, res) => {
     const orders = await Order.find();
