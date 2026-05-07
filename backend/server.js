@@ -11,17 +11,11 @@ const fs = require("fs");
 
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
-  port: 587,
-  secure: false,
+  service: "gmail",
   auth: {
-    user: process.env.ETHEREAL_EMAIL,
-    pass: process.env.ETHEREAL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
-  },
-  connectionTimeout: 10000
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS
+  }
 });
 
 
@@ -199,7 +193,7 @@ app.post("/order", async (req, res) => {
 
     stream.on("finish", async () => {
       const info = await transporter.sendMail({
-        from: process.env.ETHEREAL_EMAIL,
+        from: process.env.GMAIL_USER,
         to: email,
         subject: "Order Invoice",
         text: `Your order placed successfully check the attached invoice for details. Total Amount: Rs.${totalAmount.toFixed(2)}`,
