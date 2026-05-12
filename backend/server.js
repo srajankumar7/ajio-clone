@@ -232,15 +232,57 @@ app.get("/orders/:userId", async (req, res) => {
 });
 
 app.put("/order/:id", async (req, res) => {
-    const { status } = req.body;
-    const updated = await Order.findByIdAndUpdate(
-        req.params.id,
-        { status },
-        { new: true }
-    );
-    res.json(updated);
-});
 
+  try {
+
+    const { status } = req.body;
+
+    const updated = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: updated.email,
+
+      subject: "AJIO Order Status Updated",
+
+      html: `
+        <div style="font-family: Arial; padding:20px;">
+
+          <h2>Order Status Updated</h2>
+
+          <p>Hello <b>${updated.name}</b>,</p>
+
+          <p>Your order status has been updated successfully.</p>
+
+          <h3>Status: ${status}</h3>
+
+          <p>
+            Thank you for shopping with AJIO.
+          </p>
+
+        </div>
+      `
+    });
+
+    console.log("Status mail sent");
+
+    res.json(updated);
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
 app.post("/create-checkout-session", async (req, res) => {
   const { cartItems, userId, name, email, mobile, address, city, pincode } = req.body;
 
@@ -266,19 +308,6 @@ app.post("/create-checkout-session", async (req, res) => {
   res.json({ url: session.url });
 });
 
-app.get("/test-email", async (req, res) => {
-  try {
-    await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: process.env.GMAIL_USER,
-      subject: "Test Email",
-      text: "Resend is working!"
-    });
-    res.json("Email sent!");
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 app.get("/users", async (req, res) => {
     const users = await UserModel.find();
